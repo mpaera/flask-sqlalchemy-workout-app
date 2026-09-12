@@ -9,13 +9,19 @@ class WorkoutExerciseSchema(Schema):
     reps = fields.Int(allow_none=True)
 
 
+class ExerciseSchema(Schema):
+    id = fields.Int(dump_only=True)
+    name = fields.Str(required=True)
+    muscle_group = fields.Str(required=True)
+
+
 class WorkoutSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
     description = fields.Str(required=True)
 
-
-class ExerciseSchema(Schema):
-    id = fields.Int(dump_only=True)
-    name = fields.Str(required=True)
-    muscle_group = fields.Str(required=True)
+    exercises = fields.Nested(
+        ExerciseSchema,
+        many=True,
+        dump_only=True
+    )

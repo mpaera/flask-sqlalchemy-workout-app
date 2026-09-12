@@ -1,44 +1,39 @@
 from app import app, db
-from models import Workout, Exercise, WorkoutExercise
+from models import Workout, Exercise
 
 
 with app.app_context():
-    db.drop_all()
-    db.create_all()
+    Workout.query.delete()
+    Exercise.query.delete()
 
-    workout1 = Workout(
-        name="Full Body Workout",
-        description="A complete full body strength workout"
-    )
+    workouts = [
+        Workout(
+            name="Full Body Workout",
+            description="A complete full body strength workout"
+        ),
+        Workout(
+            name="Upper Body Workout",
+            description="A workout focused on upper body muscles"
+        )
+    ]
 
-    workout2 = Workout(
-        name="Upper Body Workout",
-        description="A workout focused on upper body muscles"
-    )
+    exercises = [
+        Exercise(
+            name="Push Ups",
+            muscle_group="Chest"
+        ),
+        Exercise(
+            name="Squats",
+            muscle_group="Legs"
+        ),
+        Exercise(
+            name="Plank",
+            muscle_group="Core"
+        )
+    ]
 
-    exercise1 = Exercise(
-        name="Push Ups",
-        description="Upper body pushing exercise"
-    )
-
-    exercise2 = Exercise(
-        name="Squats",
-        description="Lower body strength exercise"
-    )
-
-    exercise3 = Exercise(
-        name="Plank",
-        description="Core stability exercise"
-    )
-
-    db.session.add_all([
-        workout1,
-        workout2,
-        exercise1,
-        exercise2,
-        exercise3
-    ])
-
+    db.session.add_all(workouts)
+    db.session.add_all(exercises)
     db.session.commit()
 
-    print("Database seeded successfully!")
+    print("Database seeded successfully")

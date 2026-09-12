@@ -18,21 +18,12 @@ class Workout(db.Model):
         cascade="all, delete-orphan"
     )
 
-    @validates("name")
-    def validate_name(self, key, name):
-        if not name or len(name.strip()) < 3:
-            raise ValueError(
-                "Workout name must be at least 3 characters long"
-            )
-        return name.strip()
-
-    @validates("description")
-    def validate_description(self, key, description):
-        if not description or len(description.strip()) < 5:
-            raise ValueError(
-                "Workout description must be at least 5 characters long"
-            )
-        return description.strip()
+    exercises = db.relationship(
+        "Exercise",
+        secondary="workout_exercises",
+        back_populates="workouts",
+        viewonly=True
+    )
 
 
 class Exercise(db.Model):
@@ -48,21 +39,12 @@ class Exercise(db.Model):
         cascade="all, delete-orphan"
     )
 
-    @validates("name")
-    def validate_name(self, key, name):
-        if not name or len(name.strip()) < 3:
-            raise ValueError(
-                "Exercise name must be at least 3 characters long"
-            )
-        return name.strip()
-
-    @validates("description")
-    def validate_description(self, key, description):
-        if not description or len(description.strip()) < 5:
-            raise ValueError(
-                "Exercise description must be at least 5 characters long"
-            )
-        return description.strip()
+    workouts = db.relationship(
+        "Workout",
+        secondary="workout_exercises",
+        back_populates="exercises",
+        viewonly=True
+    )
 
 
 class WorkoutExercise(db.Model):
@@ -96,24 +78,9 @@ class WorkoutExercise(db.Model):
     )
 
     __table_args__ = (
-        CheckConstraint(
-            "sets > 0",
-            name="check_sets_positive"
-        ),
+        CheckConstraint("sets > 0", name="check_sets_positive"),
         CheckConstraint(
             "reps IS NULL OR reps > 0",
             name="check_reps_positive"
         ),
     )
-
-    @validates("sets")
-    def validate_sets(self, key, sets):
-        if sets <= 0:
-            raise ValueError("Sets must be greater than zero")
-        return sets
-
-    @validates("reps")
-    def validate_reps(self, key, reps):
-        if reps is not None and reps <= 0:
-            raise ValueError("Reps must be greater than zero")
-        return reps
