@@ -147,7 +147,7 @@ def create_exercise():
 
         exercise = Exercise(
             name=data["name"],
-            muscle_group=data["muscle_group"]
+            description=data["description"]
         )
 
         db.session.add(exercise)
